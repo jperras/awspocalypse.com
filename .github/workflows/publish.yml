@@ -30,3 +30,10 @@ jobs:
             --exclude ".gitignore" \
             --delete \
             --cache-control "public, max-age=3600"
+
+      - name: Invalidate CloudFront cache
+        if: vars.CLOUDFRONT_DISTRIBUTION_ID != ''
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
