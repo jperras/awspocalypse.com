@@ -20,7 +20,7 @@
         }
 
         .hero-heading {
-            font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
+            font-family: 'Courier New', Courier, monospace;
             font-size: 3.5rem;
             font-weight: 900;
             color: #2c3e50;
@@ -31,8 +31,14 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
 
+        .hero-heading .letter {
+            display: inline-block;
+            opacity: 0;
+        }
+
         .tick {
             font-size:1rem; white-space:nowrap; font-family:arial,sans-serif;
+            opacity: 0;
         }
 
         .tick-flip,.tick-text-inline {
@@ -96,7 +102,9 @@
 </head>
 <body>
 
-<h1 class="hero-heading">Days Since Last AWS Apocalypse:</h1>
+<h1 class="hero-heading">
+    <span class="text-wrapper"></span>
+</h1>
 
 <div class="tick" data-did-init="handleTickInit" data-credits="false">
 
@@ -118,10 +126,57 @@
 
 </div>
 
+<!-- Anime.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+
 <!-- Tick/Flip JavaScript -->
 <script src="flip.min.js"></script>
 
 <script>
+    // Typing animation
+    var textWrapper = document.querySelector('.text-wrapper');
+    var text = 'Days Since Last AWS Apocalypse:';
+    
+    // Wrap every letter in a span, preserving spaces
+    var wrappedText = '';
+    for (var i = 0; i < text.length; i++) {
+        if (text[i] === ' ') {
+            wrappedText += "<span class='letter'>&nbsp;</span>";
+        } else {
+            wrappedText += "<span class='letter'>" + text[i] + "</span>";
+        }
+    }
+    textWrapper.innerHTML = wrappedText;
+
+    var letters = document.querySelectorAll('.hero-heading .letter');
+    
+    // Animate letters one by one
+    var currentIndex = 0;
+    
+    function typeNextLetter() {
+        if (currentIndex < letters.length) {
+            // Show current letter
+            letters[currentIndex].style.opacity = '1';
+            
+            currentIndex++;
+            setTimeout(typeNextLetter, 25);
+        } else {
+            // Typing complete, fade in counter
+            setTimeout(function() {
+                anime({
+                    targets: '.tick',
+                    opacity: [0, 1],
+                    duration: 1000,
+                    easing: 'easeInOutQuad'
+                });
+            }, 250);
+        }
+    }
+    
+    // Start typing
+    typeNextLetter();
+
     function handleTickInit(tick) {
         var locale = {
             YEAR_PLURAL: 'Years',
