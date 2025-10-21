@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flip Counter</title>
-    
+
     <!-- Tick/Flip CSS -->
     <link href="flip.css" rel="stylesheet">
-    
+
     <style>
         body {
             background-color: #fff !important;
@@ -66,31 +66,31 @@
         }
 
         .tick-text-inline {
-            color: #595d63 !important; 
+            color: #595d63 !important;
         }
 
         .tick-label {
-            color: #595d63 !important; 
+            color: #595d63 !important;
         }
 
         .tick-flip-panel {
-            color: #fff !important; 
+            color: #fff !important;
         }
 
         .tick-flip {
-            font-family: !important; 
+            font-family: !important;
         }
 
         .tick-flip-panel-text-wrapper {
-            line-height: 1.45 !important; 
+            line-height: 1.45 !important;
         }
 
         .tick-flip-panel {
-            background-color: #3c3e3c !important; 
+            background-color: #3c3e3c !important;
         }
 
         .tick-flip {
-            border-radius:0.12em !important; 
+            border-radius:0.12em !important;
         }
 
         @media (max-width: 768px) {
@@ -136,44 +136,75 @@
 <script>
     // Typing animation
     var textWrapper = document.querySelector('.text-wrapper');
-    var text = 'Days Since Last AWS Apocalypse:';
-    
+    var text = 'Days Since Last AWS Apocalypse';
+
     // Wrap every letter in a span, preserving spaces
     var wrappedText = '';
+    var apocalypseStart = text.indexOf('Apocalypse');
+    var apocalypseEnd = apocalypseStart + 11;
+
     for (var i = 0; i < text.length; i++) {
+        // Start apocalypse wrapper
+        if (i === apocalypseStart) {
+            wrappedText += '<span class="apocalypse-wrapper">';
+        }
+
         if (text[i] === ' ') {
             wrappedText += "<span class='letter'>&nbsp;</span>";
         } else {
             wrappedText += "<span class='letter'>" + text[i] + "</span>";
         }
+
+        // End apocalypse wrapper
+        if (i === apocalypseEnd - 1) {
+            wrappedText += '</span>';
+        }
     }
     textWrapper.innerHTML = wrappedText;
 
     var letters = document.querySelectorAll('.hero-heading .letter');
-    
+    var apocalypseWrapper = document.querySelector('.apocalypse-wrapper');
+
+    // Set initial styles to prevent layout shift
+    apocalypseWrapper.style.display = 'inline-block';
+    apocalypseWrapper.style.borderBottom = '3px solid transparent';
+
     // Animate letters one by one
     var currentIndex = 0;
-    
+
     function typeNextLetter() {
         if (currentIndex < letters.length) {
             // Show current letter
             letters[currentIndex].style.opacity = '1';
-            
+
             currentIndex++;
             setTimeout(typeNextLetter, 25);
         } else {
-            // Typing complete, fade in counter
+            // Typing complete, wait before changing color
             setTimeout(function() {
+                // Animate color and underline
                 anime({
-                    targets: '.tick',
-                    opacity: [0, 1],
-                    duration: 1000,
-                    easing: 'easeInOutQuad'
+                    targets: apocalypseWrapper,
+                    color: '#dc3545',
+                    borderBottom: '3px solid rgba(220, 53, 69, 1)',
+                    duration: 500,
+                    easing: 'easeInOutQuad',
+                    complete: function() {
+                        // Fade in counter
+                        setTimeout(function() {
+                            anime({
+                                targets: '.tick',
+                                opacity: [0, 1],
+                                duration: 1000,
+                                easing: 'easeInOutQuad'
+                            });
+                        }, 250);
+                    }
                 });
-            }, 250);
+            }, 300);  // 300ms delay before changing color
         }
     }
-    
+
     // Start typing
     typeNextLetter();
 
