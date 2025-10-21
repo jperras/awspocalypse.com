@@ -136,7 +136,7 @@
 <script>
     // Typing animation
     var textWrapper = document.querySelector('.text-wrapper');
-    var text = 'Days Since Last AWS Apocalypse';
+    var text = 'Time Since Last AWS Apocalypse';
 
     // Wrap every letter in a span, preserving spaces
     var wrappedText = '';
@@ -232,7 +232,7 @@
         }
 
         // create counter
-        Tick.count.up('2025-10-19T23:49:00', { format: ['y','M','d','h','m','s'] }).onupdate = function (value) {
+        Tick.count.up('2025-10-20T06:49:00Z', { format: ['y','M','d','h','m','s'] }).onupdate = function (value) {
             tick.value = value;
         };
 
